@@ -31,7 +31,6 @@ class ExecuteReportAction
         $report = $this->reportManager->create(
             $reportType,
             $reportId,
-            '$reportName', // позволять задавать из http запроса не очень правильно
             $reportOptions,
             $format ? ['format' => $format] : null
         );

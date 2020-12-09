@@ -11,7 +11,6 @@ use PhpOffice\PhpSpreadsheet\Writer\IWriter;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 /**
  * Renders report as a simple table with header and body without merged columns.
@@ -19,6 +18,8 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
  */
 class PhpSpreadsheetSimpleTableRenderer implements ReportRendererInterface
 {
+    use DownloadableResponseTrait;
+
     /**
      * @var Worksheet
      */
@@ -39,10 +40,23 @@ class PhpSpreadsheetSimpleTableRenderer implements ReportRendererInterface
      */
     private $headerStyle;
 
+    /**
+     * @var int
+     */
     private $columnOffset;
+
+    /**
+     * @var int
+     */
     private $rowOffset;
 
     /**
+     * @var ReportFilenameResolverInterface
+     */
+    private $filenameResolver;
+
+    /**
+     * @param ReportFilenameResolverInterface $filenameResolver
      * @param IWriter $writer
      * @param Spreadsheet $spreadsheet
      * @param array|null $headerStyle
@@ -50,12 +64,14 @@ class PhpSpreadsheetSimpleTableRenderer implements ReportRendererInterface
      * @param int $columnOffset
      */
     public function __construct(
+        ReportFilenameResolverInterface $filenameResolver,
         ?IWriter $writer,
         ?Spreadsheet $spreadsheet,
         ?array $headerStyle = null,
         $rowOffset = 1,
         $columnOffset = 1
     ) {
+        $this->filenameResolver = $filenameResolver;
         $this->writer = $writer;
         $this->spreadsheet = $spreadsheet;
         $this->headerStyle = $headerStyle ?? $this->getDefaultHeaderStyle();
@@ -90,22 +106,13 @@ class PhpSpreadsheetSimpleTableRenderer implements ReportRendererInterface
         $this->writeBody($result->getRows());
         $this->setColumnsAutoSize();
 
-        $response = new Response();
-
-        $filename = ($report->getName() ?? 'report').($format ? '.'.$format : '');
-        $disposition = $response->headers->makeDisposition(
-            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
-            $filename
-        );
+        $filename = $this->filenameResolver->resolveFilename($report);
 
         ob_start();
         $this->writer->save('php://output');
         $content = ob_get_clean();
 
-        $response = new Response($content);
-        $response->headers->set('Content-Disposition', $disposition);
-
-        return $response;
+        return $this->buildDownloadableResponse($content, $filename);
     }
 
     private function buildWriter(?string $format): IWriter

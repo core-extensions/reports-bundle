@@ -13,7 +13,6 @@ interface ReportManagerInterface
      *
      * @param string $reportType
      * @param mixed $reportId
-     * @param string $reportName
      * @param array|null $dataFetcherConfiguration
      * @param array|null $rendererConfiguration
      * @return ReportInterface
@@ -21,7 +20,6 @@ interface ReportManagerInterface
     public function create(
         string $reportType,
         $reportId,
-        string $reportName,
         ?array $dataFetcherConfiguration,
         ?array $rendererConfiguration
     ): ReportInterface;

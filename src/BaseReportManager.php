@@ -48,13 +48,17 @@ class BaseReportManager implements ReportManagerInterface
     public function create(
         string $reportType,
         $reportId,
-        string $reportName,
         ?array $dataFetcherConfiguration,
         ?array $rendererConfiguration
     ): ReportInterface {
-        // resolver ? или сделать на основе locator + DI configured services
-        $dataFetcher = $this->reportResolver->resolveFetcher($reportType);
-        $renderer = $this->reportResolver->resolveRender($reportType);
+        // security layer
+        $dataFetcher = $this->reportResolver->resolveFetcher($reportType, $dataFetcherConfiguration);
+        $renderer = $this->reportResolver->resolveRender($reportType, $rendererConfiguration);
+        $reportName = $this->reportResolver->resolveName(
+            $reportType,
+            $dataFetcherConfiguration,
+            $rendererConfiguration
+        );
 
         $report = $this->reportRepository->createNewReport();
         $report->setReportId($reportId);

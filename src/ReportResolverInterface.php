@@ -9,7 +9,9 @@ namespace CoreExtensions\ReportsBundle;
  */
 interface ReportResolverInterface
 {
-    public function resolveRender(string $reportType): string;
+    public function resolveName(string $reportType, ?array $fetcherConfiguration, ?array $rendererConfiguration): string;
 
-    public function resolveFetcher(string $reportType): string;
+    public function resolveRender(string $reportType, ?array $rendererConfiguration): string;
+
+    public function resolveFetcher(string $reportType, ?array $fetcherConfiguration): string;
 }
