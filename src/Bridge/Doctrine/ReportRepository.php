@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace CoreExtensions\ReportsBundle\Bridge\Doctrine;
 
+use CoreExtensions\ReportsBundle\Exception\RuntimeException;
 use CoreExtensions\ReportsBundle\ReportInterface;
 use CoreExtensions\ReportsBundle\ReportRepositoryInterface;
 use Doctrine\ORM\EntityManager;
@@ -30,7 +31,13 @@ class ReportRepository implements ReportRepositoryInterface
         ManagerRegistry $managerRegistry
     ) {
         $this->reportClass = $reportClass;
+
         $this->entityManager = $managerRegistry->getManagerForClass($reportClass);
+        if (null === $this->entityManager) {
+            throw new RuntimeException(
+                sprintf('EntityManager for "%s" is not found. Did you register your report entity?', $reportClass)
+            );
+        }
     }
 
     public function createNewReport(): ReportInterface

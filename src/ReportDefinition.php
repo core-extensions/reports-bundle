@@ -9,10 +9,6 @@ final class ReportDefinition
     /**
      * @var string
      */
-    private $type;
-    /**
-     * @var string
-     */
     private $name;
     /**
      * @var string
@@ -25,16 +21,38 @@ final class ReportDefinition
 
     /**
      * ReportInfo constructor.
-     * @param string $type
      * @param string $name
      * @param string $fetcher
      * @param string $renderer
      */
-    public function __construct(string $type, string $name, string $fetcher, string $renderer)
+    public function __construct(string $name, string $fetcher, string $renderer)
     {
-        $this->type = $type;
         $this->name = $name;
         $this->fetcher = $fetcher;
         $this->renderer = $renderer;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFetcher(): string
+    {
+        return $this->fetcher;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRenderer(): string
+    {
+        return $this->renderer;
     }
 }

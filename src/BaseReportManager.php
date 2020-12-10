@@ -9,7 +9,7 @@ use CoreExtensions\ReportsBundle\Exception\ReportFetcherNotFoundException;
 use CoreExtensions\ReportsBundle\Exception\ReportRendererNotFoundException;
 use CoreExtensions\ReportsBundle\Exception\ReportRenderingException;
 use CoreExtensions\ReportsBundle\Exception\RuntimeException;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Service\ServiceProviderInterface;
 
@@ -52,13 +52,15 @@ class BaseReportManager implements ReportManagerInterface
         ?array $rendererConfiguration
     ): ReportInterface {
         // security layer
-        $dataFetcher = $this->reportResolver->resolveFetcher($reportType, $dataFetcherConfiguration);
-        $renderer = $this->reportResolver->resolveRender($reportType, $rendererConfiguration);
-        $reportName = $this->reportResolver->resolveName(
+        $definition = $this->reportResolver->resolveReport(
             $reportType,
             $dataFetcherConfiguration,
             $rendererConfiguration
         );
+
+        $dataFetcher = $definition->getFetcher();
+        $renderer = $definition->getRenderer();
+        $reportName = $definition->getName();
 
         $report = $this->reportRepository->createNewReport();
         $report->setReportId($reportId);
@@ -90,8 +92,9 @@ class BaseReportManager implements ReportManagerInterface
         } catch (RuntimeException $e) {
             $report->setData(['error' => $e->getLogMessage()]);
             $report->setStatus(ReportStatus::ERROR);
-
             $this->reportRepository->persist($report);
+
+            throw $e;
         }
     }
 
