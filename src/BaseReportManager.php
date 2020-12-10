@@ -79,6 +79,7 @@ class BaseReportManager implements ReportManagerInterface
     /**
      * @param ReportInterface $report
      * @return Response
+     * @throws \Exception
      */
     public function execute(ReportInterface $report): Response
     {
@@ -96,7 +97,8 @@ class BaseReportManager implements ReportManagerInterface
             $report->setStatus(ReportStatus::ERROR);
             $this->reportRepository->persist($report);
 
-            throw $e;
+            // показываем причину
+            throw $e->getPrevious();
         }
     }
 
@@ -128,7 +130,7 @@ class BaseReportManager implements ReportManagerInterface
             return $fetcher->fetch($report);
         } catch (\Exception $e) {
             throw new ReportDataFetchingException(
-                'Data fetching failed',
+                sprintf('Data fetching failed (%s)', $e->getMessage()),
                 RuntimeException::DATA_FETCHING_FAILED,
                 $e
             );
@@ -157,7 +159,7 @@ class BaseReportManager implements ReportManagerInterface
             return $renderer->render($report);
         } catch (\Exception $e) {
             throw new ReportRenderingException(
-                'Rendering failed',
+                sprintf('Rendering fetching failed (%s)', $e->getMessage()),
                 RuntimeException::RENDERING_FAILED,
                 $e
             );
