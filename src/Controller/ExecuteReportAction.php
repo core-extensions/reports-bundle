@@ -41,18 +41,17 @@ class ExecuteReportAction
 
     private function readRequest(Request $request): array
     {
-        if (!$reportType = $request->get('type')) {
-            throw new InvalidArgumentException('Param "type" not found');
+        if (!$reportType = $request->get('reportType')) {
+            throw new InvalidArgumentException('Param "reportType" not found');
         }
 
-        if (!$reportId = $request->get('id')) {
-            throw new InvalidArgumentException('Param "id" not found');
+        if (!$reportId = $request->get('reportId')) {
+            throw new InvalidArgumentException('Param "reportId" not found');
         }
 
-        $reportOptions = json_decode($request->get('options'), true);
+        $dataFetchingOptions = json_decode($request->get('dataOptions'), true);
+        $renderOptions = json_decode($request->get('renderOptions'), true);
 
-        $format = $request->get('format');
-
-        return [$reportType, $reportId, $reportOptions, $format];
+        return [$reportType, $reportId, $dataFetchingOptions, $renderOptions];
     }
 }

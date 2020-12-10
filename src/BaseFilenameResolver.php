@@ -4,14 +4,19 @@ declare(strict_types=1);
 
 namespace CoreExtensions\ReportsBundle;
 
+/**
+ * Default resolver
+ */
 class BaseFilenameResolver implements ReportFilenameResolverInterface
 {
     public function resolveFilename(ReportInterface $report): string
     {
         $rendererConfiguration = $report->getRendererConfiguration();
 
-        if ($rendererConfiguration['filename']) {
-            return $rendererConfiguration['filename'];
+        $filename = $rendererConfiguration['filename'] ?? null;
+
+        if (null === $filename) {
+            $filename = $report->getName() ?? 'report';
         }
 
         /**
@@ -19,6 +24,6 @@ class BaseFilenameResolver implements ReportFilenameResolverInterface
          */
         $format = $report->getRendererConfiguration()['format'] ?? null;
 
-        return ($report->getName() ?? 'report').($format ? '.'.$format : '');
+        return $filename.($format ? '.'.$format : '');
     }
 }
