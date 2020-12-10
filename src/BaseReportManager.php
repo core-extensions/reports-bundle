@@ -66,9 +66,11 @@ class BaseReportManager implements ReportManagerInterface
         $report->setReportId($reportId);
         $report->setName($reportName);
         $report->setDataFetcher($dataFetcher);
-        $report->setDataFetcherConfiguration($dataFetcherConfiguration);
+        // null instead of empty array
+        $report->setDataFetcherConfiguration($dataFetcherConfiguration ?: null);
         $report->setRenderer($renderer);
-        $report->setRendererConfiguration($rendererConfiguration);
+        // null instead of empty array
+        $report->setRendererConfiguration($rendererConfiguration ?: null);
         $report->setStatus(ReportStatus::PENDING);
 
         return $report;
