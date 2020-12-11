@@ -1,6 +1,6 @@
 {
   "name": "core-extensions/reports-bundle",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A simple approach to reporting.",
   "type": "library",
   "license": "MIT",

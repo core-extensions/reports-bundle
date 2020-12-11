@@ -2,6 +2,9 @@
 
 > A simple approach to reporting.
 
-# Description
+## Description
 
-TODO
+## TODO
+
+* async mode via messenger
+* events
