@@ -129,3 +129,6 @@ fabric.properties
 ### Project ###
 
 /.php_cs.cache
+
+## Don't commit the lock file (as this is a library).
+composer.lock
