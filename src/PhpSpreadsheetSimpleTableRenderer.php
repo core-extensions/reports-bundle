@@ -15,6 +15,8 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Renders report as a simple table with header and body without merged columns.
  * Requires that the result is {@see ReportSimpleTableResultInterface}
+ *
+ * TODO: setData requires array, not ReportSimpleTableResultInterface
  */
 class PhpSpreadsheetSimpleTableRenderer implements ReportRendererInterface
 {

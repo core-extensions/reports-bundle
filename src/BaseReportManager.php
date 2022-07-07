@@ -86,6 +86,7 @@ class BaseReportManager implements ReportManagerInterface
         try {
             $data = $this->fetchData($report);
 
+            // TODO: $data must be serializable
             $report->setData($data);
             $report->setStatus(ReportStatus::READY);
 
